@@ -1,0 +1,89 @@
+:root {
+    --primary: #1B6B4F;
+    --secondary: #F2994A;
+}
+
+.app-wrapper {
+    grid-template-columns: 250px 1fr !important;
+}
+
+.main-sidebar {
+    position: relative;
+}
+
+.sidebar-wrapper {
+    padding-bottom: 60px;
+}
+
+/* Espaciado entre secciones del menú (Autenticación / Estudiantes) */
+#jazzy-navigation li.nav-header {
+    margin-top: 22px;
+    padding: 10px 1rem .5rem;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    --lte-sidebar-header-color: #ffffff;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+#jazzy-navigation li.nav-item {
+    margin-bottom: 4px;
+}
+
+/* Texto de los enlaces - alto contraste */
+#jazzy-navigation .nav-link,
+#jazzy-navigation .nav-link p {
+    color: #FFFFFF !important;
+    opacity: 1 !important;
+}
+
+#jazzy-navigation .nav-icon {
+    color: #FFFFFF !important;
+}
+
+#jazzy-navigation .nav-link:hover,
+#jazzy-navigation .nav-link.active {
+    background-color: var(--primary) !important;
+    color: #fff !important;
+}
+
+.brand-link, .brand-link .brand-text {
+    background-color: #0F2D21 !important;
+    color: #fff !important;
+}
+
+.btn-success {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+}
+
+.btn-warning {
+    background-color: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+    color: #fff !important;
+}
+
+.navbar-dark {
+    background-color: var(--primary) !important;
+}
+
+.instructions-card {
+    background-color: #FFF3E0;
+    border-left: 4px solid var(--secondary);
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+/* Footer fijo al fondo del sidebar */
+.sidebar-footer-custom {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    padding: 15px;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+    border-top: 1px solid rgba(255,255,255,0.15);
+    background-color: inherit;
+}

@@ -1,0 +1,29 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/admin_custom.css' %}">
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">EduSync — Panel de Administración</h1>
+{% endblock %}
+
+{% block footer %}
+{{ block.super }}
+<footer style="text-align:center; padding: 10px; color: #6C757D; font-size: 0.85rem;">
+    EduSync — Hack4Edu 2026. Todos los derechos reservados.
+</footer>
+<script>
+window.addEventListener("load", function() {
+    var sidebar = document.querySelector(".sidebar-wrapper");
+    if (sidebar) {
+        var footer = document.createElement("div");
+        footer.className = "sidebar-footer-custom";
+        footer.innerText = "EduSync v1.0 — Hack4Edu 2026";
+        sidebar.appendChild(footer);
+    }
+});
+</script>
+{% endblock %}

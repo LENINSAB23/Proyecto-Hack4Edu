@@ -1,0 +1,37 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content_title %}Panel de control{% endblock %}
+
+{% block content %}
+<div class="instructions-card">
+    <strong>¿Cómo funciona?</strong> Usa el menú de la izquierda para gestionar Estudiantes, Asistencias, Notas y Alertas.
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3 col-6">
+        <div style="background-color: #1B6B4F; color: #fff; padding: 15px; border-radius: 6px;">
+            <h3 style="margin:0;">{{ total_estudiantes }}</h3>
+            <p style="margin:0;">Estudiantes</p>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div style="background-color: #F2994A; color: #fff; padding: 15px; border-radius: 6px;">
+            <h3 style="margin:0;">{{ total_alertas }}</h3>
+            <p style="margin:0;">Alertas activas</p>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div style="background-color: #2D6CDF; color: #fff; padding: 15px; border-radius: 6px;">
+            <h3 style="margin:0;">{{ total_asistencias }}</h3>
+            <p style="margin:0;">Registros de asistencia</p>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div style="background-color: #6C757D; color: #fff; padding: 15px; border-radius: 6px;">
+            <h3 style="margin:0;">{{ total_notas }}</h3>
+            <p style="margin:0;">Notas registradas</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
