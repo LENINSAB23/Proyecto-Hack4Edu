@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f5f7f6">
+  <meta name="description" content="Panel docente KallpaSync para seguimiento académico, alertas y recursos del aula.">
+  <title>KallpaSync | Aula docente</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/lucide@latest" defer></script>
+</head>
+<body>
+  <div id="loginModal" class="login-modal hidden" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+    <div class="login-card">
+      <div class="login-header">
+        <h2 id="loginTitle">Acceso docente</h2>
+        <button type="button" class="close-modal" id="closeLoginModal" aria-label="Cerrar">×</button>
+      </div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="loginUsuario">Correo institucional</label>
+          <input id="loginUsuario" type="email" placeholder="docente@edusync.edu" autocomplete="username" required>
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Contraseña</label>
+          <input id="loginPassword" type="password" placeholder="••••••••" autocomplete="current-password" required>
+        </div>
+        <div id="loginDemoText" class="login-demo-text">Acceso de demostración: docente@edusync.edu / 123456</div>
+        <button type="submit" class="btn-submit full-width">Ingresar</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="app-container">
+    
+    <!-- Sidebar / Menú Lateral -->
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-logo">K</span>
+        <h2>KallpaSync</h2>
+      </div>
+      
+      <div class="user-info">
+        <i data-lucide="user-check"></i>
+        <span>Portal Profesor / Tutor</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" onclick="switchTab('dashboard', event)">
+          <i data-lucide="layout-dashboard"></i> Panel de control
+        </a>
+
+        <div class="nav-section-title">GESTIÓN DOCENTE</div>
+        <a href="#" class="nav-item teacher-nav" onclick="switchTab('registro', event)">
+          <i data-lucide="file-plus"></i> Cargar Notas y Asistencia
+        </a>
+        <a href="#" class="nav-item teacher-nav" onclick="switchTab('materiales', event)">
+          <i data-lucide="upload-cloud"></i> Subir Tareas / Materiales
+        </a>
+        <a href="#" class="nav-item teacher-nav" onclick="switchTab('alertas', event)">
+          <i data-lucide="bell-ring"></i> Alertas de Riesgo
+        </a>
+        <a href="#" class="nav-item teacher-nav" onclick="switchTab('estudiantes', event)">
+          <i data-lucide="graduation-cap"></i> Estudiantes
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        KallpaSync v1.0 — Hack4Edu 2026
+      </div>
+    </aside>
+
+    <!-- Área Principal -->
+    <main class="main-content">
+      
+      <!-- Navbar Superior -->
+      <header class="navbar">
+        <div class="navbar-left">
+          <span id="roleBadge" class="role-badge">Vista previa</span>
+          <span class="current-date" id="currentDate"></span>
+        </div>
+        <div class="navbar-right header-actions">
+          <button id="loginBtn" class="header-btn">Iniciar sesión</button>
+          <button id="logoutBtn" class="header-btn danger hidden">Cerrar sesión</button>
+          <span class="avatar" id="userAvatar"><i data-lucide="user-round"></i></span>
+        </div>
+      </header>
+
+      <!-- VISTA 1: DASHBOARD -->
+      <div id="view-dashboard" class="dashboard-body view-section">
+        <div class="page-heading">
+          <div>
+            <span class="eyebrow">RESUMEN DEL AULA</span>
+            <h1 class="page-title">Panel de control</h1>
+            <p class="page-subtitle">Todo lo importante de tus estudiantes, en un solo lugar.</p>
+          </div>
+        </div>
+
+        <div class="alert-banner">
+          <span class="banner-icon"><i data-lucide="sparkles"></i></span>
+          <p><strong>Seguimiento oportuno</strong><br>El panel reúne rendimiento, asistencia y participación para ayudarte a identificar quién podría necesitar acompañamiento.</p>
+        </div>
+
+        <div id="teacherActions" class="teacher-actions hidden">
+          <button class="action-panel-btn" onclick="switchTab('registro', event)"><i data-lucide="clipboard-pen"></i><span>Registrar notas</span></button>
+          <button class="action-panel-btn" onclick="switchTab('materiales', event)"><i data-lucide="folder-up"></i><span>Publicar material</span></button>
+          <button class="action-panel-btn" onclick="switchTab('alertas', event)"><i data-lucide="bell-ring"></i><span>Revisar alertas</span></button>
+        </div>
+        <div id="guestPrompt" class="guest-prompt">
+          <div><strong>¿Eres docente?</strong><span>Inicia sesión para registrar notas, publicar recursos y gestionar alertas.</span></div>
+          <button class="text-button" onclick="openLoginModal()">Acceder al panel <i data-lucide="arrow-right"></i></button>
+        </div>
+
+        <!-- Tarjetas Metricas -->
+        <div class="metrics-grid">
+          <div class="card card-green">
+            <div class="card-content">
+              <h3 id="stat-estudiantes">0</h3>
+              <p>Estudiantes evaluados</p>
+            </div>
+            <i data-lucide="graduation-cap" class="card-icon"></i>
+          </div>
+
+          <div class="card card-orange">
+            <div class="card-content">
+              <h3 id="stat-alertas">0</h3>
+              <p>Alertas activas</p>
+            </div>
+            <i data-lucide="alert-triangle" class="card-icon"></i>
+          </div>
+
+          <div class="card card-blue">
+            <div class="card-content">
+              <h3 id="stat-asistencia">0%</h3>
+              <p>Asistencia Promedio</p>
+            </div>
+            <i data-lucide="calendar-check" class="card-icon"></i>
+          </div>
+
+          <div class="card card-dark">
+            <div class="card-content">
+              <h3 id="stat-notas">0</h3>
+              <p>Evaluaciones registradas</p>
+            </div>
+            <i data-lucide="file-spreadsheet" class="card-icon"></i>
+          </div>
+        </div>
+
+        <!-- Lista rápida de alertas -->
+        <section class="card-box">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">ATENCIÓN PRIORITARIA</span>
+              <h2>Estudiantes que necesitan seguimiento</h2>
+            </div>
+            <button class="text-button teacher-only hidden" onclick="switchTab('alertas', event)">Ver todas <i data-lucide="arrow-right"></i></button>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Estudiante</th>
+                  <th>Asistencia</th>
+                  <th>Nota Promedio</th>
+                  <th>Participación (2 sem)</th>
+                  <th>Estado del Algoritmo</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-dashboard-alertas"></tbody>
+            </table>
+          </div>
+          <div id="dashboard-empty" class="empty-state hidden">
+            <i data-lucide="circle-check"></i>
+            <strong id="dashboard-empty-title">Todo en orden</strong>
+            <span id="dashboard-empty-message">No hay alertas activas con los datos actuales.</span>
+          </div>
+        </section>
+      </div>
+
+      <!-- VISTA 2: CARGAR NOTAS Y ASISTENCIA (PARA PROFESORES) -->
+      <div id="view-registro" class="dashboard-body view-section" style="display: none;">
+        <div class="page-heading"><div><span class="eyebrow">GESTIÓN ACADÉMICA</span><h1 class="page-title">Registrar evaluación</h1><p class="page-subtitle">Actualiza la asistencia, nota y participación de un estudiante.</p></div></div>
+        
+        <div class="card-box form-box">
+          <h2>Registrar Evaluación / Asistencia</h2>
+          <form id="form-evaluacion">
+            <div class="form-group">
+              <label for="select-estudiante">Seleccionar Estudiante:</label>
+              <select id="select-estudiante" required>
+                <option value="">Selecciona un estudiante</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="input-asistencia">Asistencia (%)</label>
+                <input type="number" id="input-asistencia" min="0" max="100" placeholder="Ej. 85" required>
+              </div>
+
+              <div class="form-group">
+                <label for="input-nota">Nota (0 a 20)</label>
+                <input type="number" id="input-nota" min="0" max="20" step="0.5" placeholder="Ej. 15.5" required>
+              </div>
+
+              <div class="form-group">
+                <label for="input-participacion">Participación (últimas 2 semanas)</label>
+                <select id="input-participacion" required>
+                  <option value="Alta">Alta</option>
+                  <option value="Media">Media</option>
+                  <option value="Nula">Nula</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-submit">
+              <i data-lucide="save"></i> Guardar evaluación
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- VISTA 3: SUBIR MATERIALES / TAREAS -->
+      <div id="view-materiales" class="dashboard-body view-section" style="display: none;">
+        <div class="page-heading"><div><span class="eyebrow">RECURSOS DEL AULA</span><h1 class="page-title">Tareas y materiales</h1><p class="page-subtitle">Comparte instrucciones y recursos con tus estudiantes.</p></div></div>
+        <div class="card-box form-box">
+          <h2>Publicar contenido para el aula</h2>
+          <form id="form-material">
+            <div class="form-group">
+              <label for="material-title">Título del recurso</label>
+              <input id="material-title" type="text" placeholder="Ej. Guía de álgebra: ecuaciones" maxlength="120" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="material-type">Tipo</label>
+                <select id="material-type" required>
+                  <option value="Material">Material</option>
+                  <option value="Tarea">Tarea</option>
+                  <option value="Evaluación">Evaluación</option>
+                </select>
+              </div>
+              <div class="form-group" style="grid-column: span 2;">
+                <label for="material-desc">Descripción e instrucciones</label>
+                <input id="material-desc" type="text" placeholder="Indica brevemente qué deben hacer" maxlength="500" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="material-link">Enlace del recurso <span class="optional-label">(opcional)</span></label>
+              <input id="material-link" type="url" placeholder="https://...">
+              <small>Por ahora puedes compartir enlaces de Drive, documentos o videos.</small>
+            </div>
+            <button type="submit" class="btn-submit">
+              <i data-lucide="send"></i> Publicar para el aula
+            </button>
+          </form>
+        </div>
+
+        <div class="card-box">
+          <div class="section-heading"><div><span class="eyebrow">BIBLIOTECA DEL AULA</span><h2>Recursos recientes</h2></div></div>
+          <div id="materiales-list" class="materials-list"></div>
+        </div>
+      </div>
+
+      <!-- VISTA 4: GESTIÓN DE ALERTAS -->
+      <div id="view-alertas" class="dashboard-body view-section" style="display: none;">
+        <div class="page-heading"><div><span class="eyebrow">SEGUIMIENTO</span><h1 class="page-title">Alertas de riesgo</h1><p class="page-subtitle">Revisa señales de alerta y prioriza el acompañamiento.</p></div></div>
+        <div class="card-box">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Estudiante</th>
+                  <th>Detalle de la Alerta</th>
+                  <th>Fecha de Detección</th>
+                  <th>Acción Recomendada</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-alertas-full">
+                <!-- Dinámico -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- VISTA 5: ESTUDIANTES -->
+      <div id="view-estudiantes" class="dashboard-body view-section" style="display: none;">
+        <div class="page-heading"><div><span class="eyebrow">TU AULA</span><h1 class="page-title">Estudiantes</h1><p class="page-subtitle">Consulta el estado académico de cada estudiante.</p></div></div>
+        <div class="card-box">
+          <div class="student-tools">
+            <label class="search-field" for="studentSearch"><i data-lucide="search"></i><input id="studentSearch" type="search" placeholder="Buscar estudiante..." aria-label="Buscar estudiante"></label>
+            <span id="studentCount" class="count-label"></span>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Asistencia</th>
+                  <th>Última Nota</th>
+                  <th>Participación</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-estudiantes">
+                <!-- Dinámico -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <span>Copyright © 2026 KallpaSync - Hack4Edu 2026. Todos los derechos reservados.</span>
+      </footer>
+    </main>
+  </div>
+
+  <div id="appToast" class="toast hidden" role="status" aria-live="polite"></div>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
