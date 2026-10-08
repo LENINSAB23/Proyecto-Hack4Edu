@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'estudiantes',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -81,20 +82,20 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 JAZZMIN_SETTINGS = {
-    "site_title": "EduSync Admin",
-    "site_header": "EduSync",
-    "site_brand": "EduSync",
-    "welcome_sign": "Bienvenido al Panel de EduSync",
-    "copyright": "EduSync - Hack4Edu 2026",
+    "site_title": "KallpaSync Admin",
+    "site_header": "KallpaSync",
+    "site_brand": "KallpaSync",
+    "welcome_sign": "Bienvenido al Panel de KallpaSync",
+    "copyright": "KallpaSync - Hack4Edu 2026",
     "show_sidebar": True,
     "navigation_expanded": True,
+    "custom_css": "css/admin_custom.css",
 }
 
 JAZZMIN_UI_TWEAKS = {
     "navbar": "navbar-dark",
     "navbar_fixed": True,
     "theme": "flatly",
-    "dark_mode_theme": None,
     "button_classes": {
         "primary": "btn-success",
         "secondary": "btn-outline-secondary",

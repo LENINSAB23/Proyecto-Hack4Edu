@@ -1,7 +1,15 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from django.contrib.admin.views.decorators import staff_member_required
 from estudiantes.models import Estudiante, Asistencia, Nota, Alerta
+from estudiantes.views import EstudianteViewSet, AsistenciaViewSet, NotaViewSet, AlertaViewSet
+
+router = DefaultRouter()
+router.register(r'estudiantes', EstudianteViewSet)
+router.register(r'asistencias', AsistenciaViewSet)
+router.register(r'notas', NotaViewSet)
+router.register(r'alertas', AlertaViewSet)
 
 original_index = admin.site.index
 
@@ -18,4 +26,5 @@ admin.site.index = custom_index
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/', include(router.urls)),
 ]
