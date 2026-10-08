@@ -1,67 +1,129 @@
+# 🎓 AldaEdu — Hack4Edu 2026
 
-3. Correr migraciones:
+> **Plataforma inteligente de seguimiento académico y detección temprana del riesgo de deserción escolar.** Desarrollada para empoderar a docentes y tutores mediante analítica predictiva de asistencia, calificaciones y alertas automatizadas multicanal (WhatsApp y Email).
+
+---
+
+## 🌟 Características Principales
+
+- **Dashboard Docente Interactivo**: Métricas clave en tiempo real (estudiantes evaluados, alertas críticas, tasa de asistencia promedio y calificaciones).
+- **Motor Analítico de Detección de Riesgo (Pandas & Django)**:
+  - Reglas de asistencia crítica (< 70% o inasistencias reiteradas).
+  - Detección de rachas de 3 o más faltas consecutivas.
+  - Alerta ante caídas abruptas de rendimiento por curso (≥ 2 puntos).
+  - Cálculo de Score de Riesgo (0 a 100) y categorización: **Bajo**, **Medio** y **Alto**.
+- **Notificaciones Automáticas Multicanal**:
+  - 📩 **Correo Electrónico (SMTP)** a docentes y tutores.
+  - 📱 **WhatsApp (API Twilio)** con plantillas de alerta inmediata.
+- **Base de Datos Cloud en Supabase**:
+  - Conexión vía Transaction Pooler (PostgreSQL en puerto 6543).
+  - Fallback automático a SQLite local si no se detectan credenciales de base de datos remota.
+- **Panel Administrativo Profesional**:
+  - Personalizado con **Django Jazzmin** con paleta corporativa AldaEdu.
+  - Badges dinámicos de severidad de riesgo, filtros avanzados y acciones en lote.
+- **API REST Integrada**:
+  - Endpoints para gestión de alumnos, registro de notas, asistencia, materiales y evaluación masiva.
+
+---
+
+## 🚀 Inicio Rápido
+
+### 1. Clonar el repositorio y preparar el entorno virtual
+
+```bash
+git clone https://github.com/LENINSAB23/Proyecto-Hack4Edu.git
+cd Proyecto-Hack4edu
+
+# Crear y activar entorno virtual
+python -m venv venv
+
+# En Windows:
+venv\Scripts\activate
+# En Linux / macOS:
+source venv/bin/activate
+```
+
+### 2. Instalar dependencias
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Configurar variables de entorno
+
+Copia el archivo de plantilla `.env.example` como `.env`:
+
+```bash
+cp .env.example .env
+```
+
+Configura tus credenciales en `.env`:
+- Conexión Supabase PostgreSQL (o déjalo en blanco para usar SQLite local).
+- Claves de Twilio y Gmail para notificaciones reales por WhatsApp y correo.
+
+### 4. Aplicar migraciones
+
 ```bash
 python manage.py migrate
 ```
 
-4. Crear superusuario:
+### 5. (Opcional) Cargar datos de demostración
+
+Carga un aula completa con estudiantes, notas, asistencias, materiales y diagnósticos calculados:
+
 ```bash
-python manage.py createsuperuser
+python manage.py seed_data
 ```
 
-5. Levantar el servidor:
+### 6. Iniciar el servidor de desarrollo
+
 ```bash
 python manage.py runserver
 ```
 
-Panel de administración disponible en `/admin`.
+- **Aula / Dashboard Docente**: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+- **Panel Admin AldaEdu**: [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)
+- **Acceso Docente Demo**: `docente@aldaedu.pe` / `123456`
 
-## Conexión a Supabase
+---
 
-El proyecto usa el **Transaction pooler** de Supabase (puerto 6543), recomendado para despliegues en plataformas como Render en vez de la conexión directa.
+## 🛠️ Comandos de Gestión Personalizados
 
-## Estado actual
+| Comando | Descripción |
+|---|---|
+| `python manage.py evaluar_riesgo` | Ejecuta el motor analítico de detección sobre todo el alumnado y genera alertas en la BD. |
+| `python manage.py seed_data` | Puebla la base de datos con alumnos, notas, asistencias y recursos de prueba. |
+| `python main.py` | Ejecuta el test aislado del despachador de notificaciones (WhatsApp / Email). |
+| `python test_detector.py` | Ejecuta un test integral del detector analítico con persistencia en Supabase. |
 
-- Conexión a Supabase funcionando
-- Modelos y migraciones aplicadas
-- Panel de administración personalizado con identidad visual EduSync (verde/naranja)
-- Pendiente: API REST (Django REST Framework) para conectar con Dashboard y módulo de Alertas# Proyecto-Hack4edu 
-=======
-# Proyecto-Hack4edu origin/frontend
-=======
-# Módulo de Notificación de Estudiantes en Riesgo
+---
 
-Este módulo fue diseñado para detectar cuando un estudiante es marcado como **"riesgo alto"** y notificar de manera automática a un docente/tutor. Funciona enviando:
-1. **Un correo electrónico** (vía SMTP, por ejemplo con Gmail).
-2. **Un mensaje de WhatsApp** (vía la API de Twilio).
+## 📁 Estructura del Proyecto
 
-Está estructurado de manera limpia para que cuando te toque unirlo con el trabajo de tus compañeros, la integración sea sencilla.
+```text
+Proyecto-Hack4edu/
+├── edusync_backend/            # Configuración central Django (settings, urls, wsgi)
+├── estudiantes/                # Módulo principal de la aplicación
+│   ├── management/commands/    # Comandos CLI (evaluar_riesgo, seed_data)
+│   ├── services/
+│   │   └── detector.py         # Motor analítico con Pandas (score y reglas de riesgo)
+│   ├── models.py               # Modelos: Estudiante, Asistencia, Nota, Alerta, Material
+│   ├── views.py                # Endpoints de API REST y vista del Dashboard
+│   └── admin.py                # Configuración de Jazzmin Admin
+├── src/                        # Microservicios de mensajería externa
+│   ├── config.py               # Cargador de entorno para notificaciones
+│   ├── detector.py             # Adaptador de eventos de riesgo
+│   └── notifier.py             # Integración con Twilio (WhatsApp) y SMTP (Email)
+├── templates/                  # Plantillas HTML (index.html, admin personalizado)
+├── static/                     # Archivos estáticos (CSS, JS, iconos)
+│   ├── css/                    # Estilos modernos del dashboard
+│   └── js/                     # Lógica frontend reactiva y cliente API REST
+├── .env.example                # Variables de entorno documentadas
+├── requirements.txt            # Dependencias del proyecto
+└── manage.py                   # CLI principal de Django
+```
 
-## Estructura de Archivos
-* `main.py`: Punto de entrada de prueba. Aquí se simula la llegada de los datos de un estudiante para comprobar que funciona.
-* `src/config.py`: Se encarga de cargar y organizar las variables de entorno para no exponer contraseñas en el código.
-* `src/detector.py`: Simula el "listener" o motor que revisa el estado del alumno y dispara el evento de notificación si corresponde.
-* `src/notifier.py`: Contiene la lógica que se conecta a los servidores de email (SMTP) y a la API de Twilio para enviar los mensajes reales.
-* `requirements.txt`: Lista de librerías externas necesarias (Twilio y dotenv).
-* `.env.example`: Plantilla que debes renombrar a `.env` y rellenar con tus datos reales.
+---
 
-## ¿Cómo probarlo?
-
-1. **Instalar dependencias:**
-   Es recomendable usar un entorno virtual (venv). Instala las librerías con:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. **Configurar el `.env`:**
-   * Crea una copia del archivo `.env.example` y llámalo **`.env`**.
-   * Llena los datos con tu información real.
-   * *Para el Email*: Si usas Gmail, recuerda activar las "Contraseñas de aplicación" en tu cuenta de Google.
-   * *Para WhatsApp*: Debes registrarte en [Twilio](https://www.twilio.com/) para obtener tu `ACCOUNT_SID`, `AUTH_TOKEN` y configurar un número de Sandbox para WhatsApp.
-
-3. **Ejecutar la prueba:**
-   Modifica el archivo `main.py` para poner tu propio email o número de teléfono temporalmente en los datos de `tutor_mock`, y luego ejecuta:
-   ```bash
-   python main.py
-   ```
-   Verás en la consola los mensajes informativos simulando la detección del estudiante y el envío. origin/feat-notificaciones-dany
+## 👥 Equipo — Hack4Edu 2026
+Desarrollado con dedicación para reducir la brecha educativa y prevenir la deserción escolar en Latinoamérica.

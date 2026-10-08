@@ -1,12 +1,16 @@
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from twilio.rest import Client
+from email.header import Header
+try:
+    from twilio.rest import Client
+except ImportError:
+    Client = None
 from src.config import Config
 
 class NotificationService:
     def __init__(self):
-        if Config.TWILIO_ACCOUNT_SID and Config.TWILIO_AUTH_TOKEN:
+        if Client and Config.TWILIO_ACCOUNT_SID and Config.TWILIO_AUTH_TOKEN:
             self.twilio_client = Client(Config.TWILIO_ACCOUNT_SID, Config.TWILIO_AUTH_TOKEN)
         else:
             self.twilio_client = None
@@ -14,12 +18,12 @@ class NotificationService:
     def send_email(self, to_email: str, subject: str, message: str):
         if not Config.SENDER_EMAIL or not Config.SENDER_PASSWORD:
             print("Email no configurado en las variables de entorno.")
-            return
+            return False
 
         msg = MIMEMultipart()
         msg['From'] = Config.SENDER_EMAIL
         msg['To'] = to_email
-        msg['Subject'] = subject
+        msg['Subject'] = Header(subject, 'utf-8')
 
         msg.attach(MIMEText(message, 'plain', 'utf-8'))
 
@@ -29,8 +33,10 @@ class NotificationService:
                 server.login(Config.SENDER_EMAIL, Config.SENDER_PASSWORD)
                 server.send_message(msg)
             print(f"Correo enviado exitosamente a {to_email}")
+            return True
         except Exception as e:
             print(f"Error al enviar correo a {to_email}: {e}")
+            return False
 
     def send_whatsapp(self, to_phone: str, message: str):
         if not self.twilio_client:

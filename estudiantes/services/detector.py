@@ -1,6 +1,6 @@
 """
 detector.py
-Motor analítico para la detección temprana de riesgo de abandono escolar (EduSync).
+Motor analítico para la detección temprana de riesgo de abandono escolar (AldaEdu).
 Incluye análisis por asignatura, cálculo de score 0-100 y serialización nativa.
 """
 from typing import Dict, Any, List

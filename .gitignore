@@ -7,6 +7,8 @@ env/
 
 # Variables de entorno (¡NUNCA SUBIR EL .env REAL!)
 .env
+db.sqlite3
+*.sqlite3
 
 # Archivos de caché de Python
 __pycache__/

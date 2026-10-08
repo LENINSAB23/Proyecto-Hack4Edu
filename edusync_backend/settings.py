@@ -3,9 +3,9 @@ from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-cambia-esto-en-produccion'
+SECRET_KEY = config('SECRET_KEY', default='django-insecure-aldaedu-hack4edu-2026-prod-key')
 
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = ['*']
 
@@ -49,16 +49,27 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'edusync_backend.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT'),
+DB_NAME = config('DB_NAME', default=None)
+DB_HOST = config('DB_HOST', default=None)
+
+if DB_NAME and DB_HOST:
+    DATABASES = {
+        'default': {
+            'ENGINE': config('DB_ENGINE', default='django.db.backends.postgresql'),
+            'NAME': DB_NAME,
+            'USER': config('DB_USER', default='postgres'),
+            'PASSWORD': config('DB_PASSWORD', default=''),
+            'HOST': DB_HOST,
+            'PORT': config('DB_PORT', default='6543'),
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -81,11 +92,11 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 JAZZMIN_SETTINGS = {
-    "site_title": "EduSync Admin",
-    "site_header": "EduSync",
-    "site_brand": "EduSync",
-    "welcome_sign": "Bienvenido al Panel de EduSync",
-    "copyright": "EduSync - Hack4Edu 2026",
+    "site_title": "AldaEdu Admin",
+    "site_header": "AldaEdu",
+    "site_brand": "AldaEdu",
+    "welcome_sign": "Bienvenido al Panel de AldaEdu",
+    "copyright": "AldaEdu - Hack4Edu 2026",
     "show_sidebar": True,
     "navigation_expanded": True,
 }
