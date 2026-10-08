@@ -1,2 +1,22 @@
 __pycache__/
 *.pyc
+# Entornos virtuales
+venv/
+env/
+.env/
+
+# Variables de entorno (¡NUNCA SUBIR EL .env REAL!)
+.env
+
+# Archivos de caché de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Herramientas y editores
+.vscode/
+.idea/
+*.swp
+
