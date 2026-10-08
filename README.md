@@ -1,4 +1,5 @@
 
+
 3. Correr migraciones:
 ```bash
 python manage.py migrate
@@ -26,3 +27,5 @@ El proyecto usa el **Transaction pooler** de Supabase (puerto 6543), recomendado
 - Modelos y migraciones aplicadas
 - Panel de administración personalizado con identidad visual EduSync (verde/naranja)
 - Pendiente: API REST (Django REST Framework) para conectar con Dashboard y módulo de Alertas# Proyecto-Hack4edu 
+=======
+# Proyecto-Hack4edu origin/frontend
