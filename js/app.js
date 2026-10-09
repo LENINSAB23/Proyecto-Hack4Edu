@@ -66,7 +66,7 @@ function setTeacherState(isLoggedIn, user = null) {
   if (guestPrompt) guestPrompt.classList.toggle("hidden", isLoggedIn);
 
   if (sidebarUserName) {
-    sidebarUserName.textContent = isLoggedIn ? (user?.name || "Profesor Activo") : "Visitante Demo";
+    sidebarUserName.textContent = isLoggedIn ? (user?.name || "Profesor Activo") : "Invitado";
   }
   if (sidebarUserAvatar) {
     sidebarUserAvatar.textContent = isLoggedIn 

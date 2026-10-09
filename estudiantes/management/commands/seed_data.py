@@ -4,10 +4,10 @@ from estudiantes.models import Estudiante, Asistencia, Nota, Material
 from estudiantes.services.detector import evaluar_todos_los_estudiantes
 
 class Command(BaseCommand):
-    help = "Puebla la base de datos con estudiantes, asistencias, notas y materiales de demostración"
+    help = "Puebla la base de datos con estudiantes, asistencias, notas y materiales iniciales"
 
     def handle(self, *args, **kwargs):
-        self.stdout.write("Generando datos de demostración para AldaEdu...")
+        self.stdout.write("Generando datos iniciales del aula para AldaEdu...")
 
         estudiantes_data = [
             {
@@ -16,8 +16,8 @@ class Command(BaseCommand):
                 "tutor_nombre": "Roberto Mendoza",
                 "tutor_email": "roberto.mendoza@ejemplo.com",
                 "tutor_telefono": "+51987654321",
-                "presentes": [False, False, False, True, False],
-                "notas": [("Matemáticas", 9.0), ("Comunicación", 10.0), ("Ciencias", 8.5)],
+                "presentes": [True, True, True, True, True],
+                "notas": [("Matemáticas", 19.0), ("Comunicación", 19.0), ("Ciencias", 19.0)],
             },
             {
                 "nombre": "Ana Gómez",
@@ -43,8 +43,8 @@ class Command(BaseCommand):
                 "tutor_nombre": "Carmen Pérez",
                 "tutor_email": "carmen.perez@ejemplo.com",
                 "tutor_telefono": "+51944556677",
-                "presentes": [True, False, True, False, True],
-                "notas": [("Matemáticas", 11.5), ("Comunicación", 12.0), ("Ciencias", 10.5)],
+                "presentes": [True, True, True, True, True],
+                "notas": [("Matemáticas", 15.0), ("Comunicación", 15.0), ("Ciencias", 15.0)],
             },
             {
                 "nombre": "Lucía Fernández",

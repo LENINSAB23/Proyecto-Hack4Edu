@@ -118,26 +118,31 @@ def evaluar_riesgo_estudiante(estudiante: Estudiante, persistir_alerta: bool = T
     todos_motivos = res_asist["motivos"] + res_notas["motivos"]
     descripcion = " | ".join(todos_motivos) if todos_motivos else "Sin factores críticos detectados"
 
-    # Persistencia transaccional en Supabase
-    if persistir_alerta and nivel in ["medio", "alto"]:
+    # Persistencia transaccional en Supabase / Postgres
+    if persistir_alerta:
         with transaction.atomic():
             alerta_pendiente = Alerta.objects.filter(
                 estudiante=estudiante,
                 atendida=False
             ).first()
 
-            if alerta_pendiente:
-                # Si ya existía, actualizamos el nivel y motivo con los nuevos datos
-                alerta_pendiente.nivel_riesgo = nivel
-                alerta_pendiente.descripcion = descripcion
-                alerta_pendiente.save()
+            if nivel in ["medio", "alto"]:
+                if alerta_pendiente:
+                    alerta_pendiente.nivel_riesgo = nivel
+                    alerta_pendiente.descripcion = descripcion
+                    alerta_pendiente.save()
+                else:
+                    Alerta.objects.create(
+                        estudiante=estudiante,
+                        nivel_riesgo=nivel,
+                        descripcion=descripcion,
+                        atendida=False
+                    )
             else:
-                Alerta.objects.create(
-                    estudiante=estudiante,
-                    nivel_riesgo=nivel,
-                    descripcion=descripcion,
-                    atendida=False
-                )
+                # Si el riesgo se redujo a bajo, resolvemos la alerta pendiente
+                if alerta_pendiente:
+                    alerta_pendiente.atendida = True
+                    alerta_pendiente.save()
 
     return {
         "estudiante_id": estudiante.id,

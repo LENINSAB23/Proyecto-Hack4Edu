@@ -28,11 +28,11 @@ def api_login(request):
     username = body.get("username", "").strip()
     password = body.get("password", "")
 
-    # Credenciales de demostración por defecto
+    # Credenciales por defecto
     if username in ["docente@aldaedu.pe", "docente@aldaedu.edu", "docente@edusync.edu"] and password == "123456":
         return JsonResponse({
             "success": True,
-            "token": "aldaedu-token-demo-docente-2026",
+            "token": "aldaedu-token-docente-2026",
             "user": {
                 "name": "Profesor Alejandro Rivera",
                 "email": "docente@aldaedu.pe",
@@ -57,7 +57,7 @@ def api_login(request):
 
 
 def _serialize_student(student):
-    """Calcula métricas académicas para un estudiante."""
+    """Calcula métricas académicas y nivel de riesgo real para un estudiante."""
     asistencias = student.asistencias.all()
     total_asist = asistencias.count()
     presentes = asistencias.filter(presente=True).count()
@@ -67,6 +67,12 @@ def _serialize_student(student):
     promedio_notas = round(sum(float(n.calificacion) for n in notas) / notas.count(), 1) if notas.exists() else None
     ultima_nota = float(notas.order_by("-fecha").first().calificacion) if notas.exists() else None
 
+    # Ejecutar evaluación de riesgo para actualizar alertas
+    eval_dict = evaluar_riesgo_estudiante(student, persistir_alerta=True)
+    nivel_riesgo = eval_dict["nivel_riesgo"]
+    alerta_activa = student.alertas.filter(atendida=False).order_by("-fecha").first()
+    alerta_desc = alerta_activa.descripcion if (alerta_activa and nivel_riesgo != "bajo") else (eval_dict["descripcion"] if nivel_riesgo != "bajo" else "")
+
     # Participación estimada
     if tasa_asistencia >= 85 and (promedio_notas is None or promedio_notas >= 14):
         participacion = "Alta"
@@ -74,9 +80,6 @@ def _serialize_student(student):
         participacion = "Media"
     else:
         participacion = "Nula"
-
-    alerta_activa = student.alertas.filter(atendida=False).order_by("-fecha").first()
-    nivel_riesgo = alerta_activa.nivel_riesgo if alerta_activa else ("bajo" if (tasa_asistencia >= 75 and (promedio_notas or 14) >= 11) else "medio")
 
     return {
         "id": student.id,
@@ -90,8 +93,8 @@ def _serialize_student(student):
         "promedio": promedio_notas or ultima_nota or 14.0,
         "participacion": participacion,
         "nivel_riesgo": nivel_riesgo,
-        "alerta_descripcion": alerta_activa.descripcion if alerta_activa else "",
-        "alerta_id": alerta_activa.id if alerta_activa else None,
+        "alerta_descripcion": alerta_desc,
+        "alerta_id": alerta_activa.id if (alerta_activa and nivel_riesgo != "bajo") else None,
     }
 
 
