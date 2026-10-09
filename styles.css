@@ -1438,7 +1438,6 @@ tbody tr:last-child td {
   .sidebar { width: 240px; }
   .metrics-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
   .dashboard-grid { grid-template-columns: 1fr; }
-  .ai-scanner-banner { flex-direction: column; align-items: flex-start; gap: 14px; }
 }
 
 /* Media Queries para Celulares y Pantallas Pequeñas (<= 768px) */
@@ -1471,47 +1470,129 @@ tbody tr:last-child td {
   .nav-item { justify-content: flex-start; padding: 10px 14px; }
 
   .app-container { flex-direction: column; }
-  .main-content { min-height: calc(100vh - 64px); padding-bottom: 72px; }
+  .main-content { min-height: calc(100vh - 64px); padding-bottom: 90px; }
 
+  /* Navbar fija de 1 sola línea sin desbordamiento */
   .navbar {
-    padding: 10px 16px;
-    gap: 10px;
-    flex-wrap: wrap;
+    height: 60px;
+    padding: 8px 12px;
+    gap: 8px;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background-color: #ffffff;
+    box-shadow: var(--shadow-sm);
   }
   .navbar-left {
     gap: 8px;
+    flex-shrink: 1;
+    min-width: 0;
+    overflow: hidden;
   }
   .navbar-right {
     gap: 6px;
+    flex-shrink: 0;
   }
   .navbar-tag {
     font-size: 0.72rem;
     padding: 4px 8px;
+    white-space: nowrap;
   }
   .current-date {
     display: none;
   }
-  .btn-header span {
-    display: none;
+  
+  /* Ocultar texto ÚNICAMENTE de botones del navbar en celulares */
+  .navbar-right .btn-header {
+    padding: 0;
+    width: 38px;
+    height: 38px;
+    min-height: 38px;
+    border-radius: var(--radius-md);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
-  .btn-header {
-    padding: 8px 10px;
-    min-height: 40px;
+  .navbar-right .btn-header span {
+    display: none !important;
+  }
+  .navbar-right .btn-header i {
+    width: 18px;
+    height: 18px;
+    margin: 0;
   }
 
   .dashboard-body {
-    padding: 14px 12px 80px 12px;
+    padding: 16px 12px 90px 12px;
+  }
+  .page-heading {
+    margin-bottom: 16px;
+  }
+  .page-title {
+    font-size: 1.4rem;
+    line-height: 1.25;
+  }
+  .page-subtitle {
+    font-size: 0.82rem;
   }
 
+  /* Banner IA en Móvil */
+  .ai-scanner-banner {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 18px 16px;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .ai-banner-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .ai-banner-title {
+    font-size: 1.05rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .ai-tag-live {
+    align-self: flex-start;
+  }
+  .ai-banner-desc {
+    font-size: 0.84rem;
+    line-height: 1.45;
+  }
+  .ai-banner-actions {
+    width: 100%;
+  }
+  .ai-banner-actions button {
+    width: 100%;
+    justify-content: center;
+    height: 44px;
+    font-size: 0.9rem;
+    padding: 0 16px;
+  }
+  .ai-banner-actions button span {
+    display: inline !important;
+  }
+
+  /* Métricas */
   .metrics-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
+    margin-bottom: 20px;
   }
   .metric-card {
     padding: 14px 12px;
   }
   .metric-value {
-    font-size: 1.4rem;
+    font-size: 1.35rem;
+  }
+  .metric-label {
+    font-size: 0.75rem;
   }
 
   /* Modales en celulares */
