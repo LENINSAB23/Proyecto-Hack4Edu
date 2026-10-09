@@ -127,11 +127,16 @@ function renderMetrics() {
   if (statNotas) statNotas.textContent = `${notaProm} / 20`;
   if (statTotalAlertas) statTotalAlertas.textContent = altos + medios;
 
-  // Actualizar badges en sidebar
+  // Actualizar badges en sidebar y navegación móvil
   const badgeAlertas = document.getElementById("sidebarBadgeAlertas");
+  const mobileBadgeAlertas = document.getElementById("mobileBadgeAlertas");
   if (badgeAlertas) {
     badgeAlertas.textContent = altos;
     badgeAlertas.classList.toggle("hidden", altos === 0);
+  }
+  if (mobileBadgeAlertas) {
+    mobileBadgeAlertas.textContent = altos;
+    mobileBadgeAlertas.classList.toggle("hidden", altos === 0);
   }
 }
 
@@ -445,6 +450,16 @@ async function marcarAlertaAtendida(studentId) {
 }
 
 // =================== NAVIGATION ===================
+function toggleMobileSidebar(forceState) {
+  const sidebar = document.querySelector(".sidebar");
+  const backdrop = document.getElementById("sidebarBackdrop");
+  if (!sidebar) return;
+  const isOpen = forceState !== undefined ? forceState : !sidebar.classList.contains("mobile-open");
+  sidebar.classList.toggle("mobile-open", isOpen);
+  if (backdrop) backdrop.classList.toggle("active", isOpen);
+  document.body.style.overflow = isOpen ? "hidden" : "";
+}
+
 function switchTab(tabName, event) {
   if (event) event.preventDefault();
 
@@ -455,14 +470,21 @@ function switchTab(tabName, event) {
     return;
   }
 
+  // Cerrar menú móvil si está abierto
+  toggleMobileSidebar(false);
+
   document.querySelectorAll(".view-section").forEach(s => s.classList.add("hidden"));
   document.querySelectorAll(".nav-item").forEach(item => item.classList.remove("active"));
+  document.querySelectorAll(".mobile-nav-item").forEach(item => item.classList.remove("active"));
 
   const targetView = document.getElementById(`view-${tabName}`);
   if (targetView) targetView.classList.remove("hidden");
 
   const activeNav = document.querySelector(`.nav-item[data-tab="${tabName}"]`);
   if (activeNav) activeNav.classList.add("active");
+
+  const activeMobileNav = document.querySelector(`.mobile-nav-item[data-tab="${tabName}"]`);
+  if (activeMobileNav) activeMobileNav.classList.add("active");
 
   state.activeTab = tabName;
   if (typeof lucide !== "undefined") lucide.createIcons();
@@ -646,6 +668,7 @@ document.addEventListener("DOMContentLoaded", inicializar);
 
 // Exportar funciones a ventana global
 window.switchTab = switchTab;
+window.toggleMobileSidebar = toggleMobileSidebar;
 window.openModal = openModal;
 window.closeModal = closeModal;
 window.ejecutarDiagnosticoGlobal = ejecutarDiagnosticoGlobal;

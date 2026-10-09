@@ -213,11 +213,14 @@
     <!-- Sidebar Navegación Lateral -->
     <aside class="sidebar">
       <div class="brand">
-        <div class="brand-icon-wrap">A</div>
-        <div class="brand-title">
-          <span class="brand-name">AldaEdu</span>
-          <span class="brand-subtitle">Hack4Edu 2026</span>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div class="brand-icon-wrap">A</div>
+          <div class="brand-title">
+            <span class="brand-name">AldaEdu</span>
+            <span class="brand-subtitle">Hack4Edu 2026</span>
+          </div>
         </div>
+        <button type="button" class="sidebar-close-btn" onclick="toggleMobileSidebar(false)" aria-label="Cerrar menú">×</button>
       </div>
       
       <div class="user-badge-sidebar">
@@ -260,12 +263,18 @@
       </div>
     </aside>
 
+    <!-- Backdrop cortina para sidebar móvil -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleMobileSidebar(false)"></div>
+
     <!-- Área de Trabajo Principal -->
     <main class="main-content">
       
       <!-- Barra Superior -->
       <header class="navbar">
         <div class="navbar-left">
+          <button class="mobile-toggle-btn" id="mobileMenuBtn" onclick="toggleMobileSidebar()" aria-label="Abrir menú">
+            <i data-lucide="menu"></i>
+          </button>
           <span class="navbar-tag"><i data-lucide="activity" style="width:14px; height:14px;"></i> Motor IA Activo</span>
           <span class="current-date" id="currentDate"></span>
         </div>
@@ -573,6 +582,31 @@
 
   <!-- Contenedor de Alertas Toast -->
   <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Navegación Inferior Rápida para Celulares -->
+  <nav class="mobile-bottom-nav">
+    <a href="#" class="mobile-nav-item active" data-tab="dashboard" onclick="switchTab('dashboard', event)">
+      <i data-lucide="layout-dashboard"></i>
+      <span>Panel</span>
+    </a>
+    <a href="#" class="mobile-nav-item teacher-nav" data-tab="registro" onclick="switchTab('registro', event)">
+      <i data-lucide="clipboard-check"></i>
+      <span>Notas</span>
+    </a>
+    <a href="#" class="mobile-nav-item teacher-nav" data-tab="alertas" onclick="switchTab('alertas', event)">
+      <i data-lucide="alert-triangle"></i>
+      <span>Alertas</span>
+      <span id="mobileBadgeAlertas" class="nav-badge hidden">0</span>
+    </a>
+    <a href="#" class="mobile-nav-item teacher-nav" data-tab="estudiantes" onclick="switchTab('estudiantes', event)">
+      <i data-lucide="graduation-cap"></i>
+      <span>Alumnos</span>
+    </a>
+    <a href="#" class="mobile-nav-item teacher-nav" data-tab="materiales" onclick="switchTab('materiales', event)">
+      <i data-lucide="folder-kanban"></i>
+      <span>Recursos</span>
+    </a>
+  </nav>
 
   <!-- Scripts -->
   <script src="{% static 'js/api.js' %}"></script>
