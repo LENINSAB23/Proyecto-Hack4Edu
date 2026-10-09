@@ -170,5 +170,18 @@ Proyecto-Hack4edu/
 
 ---
 
+## 🚀 Despliegue en Render
+
+Para desplegar este proyecto en **Render**:
+
+1. **Build Command**: `./build.sh` (o `pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate`)
+2. **Start Command**: `gunicorn edusync_backend.wsgi:application`
+3. **Variables de Entorno**:
+   - `DEBUG`: `False`
+   - `SECRET_KEY`: Tu clave secreta de producción
+   - `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT`: Credenciales de Supabase (opcional).
+
+---
+
 ## 👥 Equipo — Hack4Edu 2026
 Desarrollado con dedicación para reducir la brecha educativa y prevenir la deserción escolar en Latinoamérica.

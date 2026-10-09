@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: proyecto-hack4edu
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn edusync_backend.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: DEBUG
+        value: "False"
