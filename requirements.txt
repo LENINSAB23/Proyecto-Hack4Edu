@@ -9,3 +9,4 @@ python-dotenv>=1.0.0
 twilio>=8.10.0
 asgiref>=3.8.0
 sqlparse>=0.5.0
+gunicorn>=23.0.0
