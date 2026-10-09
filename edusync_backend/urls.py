@@ -1,5 +1,6 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from django.contrib.admin.views.decorators import staff_member_required
 from estudiantes.models import Estudiante, Asistencia, Nota, Alerta
 from estudiantes.views import (
@@ -15,7 +16,17 @@ from estudiantes.views import (
     api_notificar_tutor,
     api_materials,
     api_stats,
+    EstudianteViewSet,
+    AsistenciaViewSet,
+    NotaViewSet,
+    AlertaViewSet,
 )
+
+router = DefaultRouter()
+router.register(r'estudiantes', EstudianteViewSet)
+router.register(r'asistencias', AsistenciaViewSet)
+router.register(r'notas', NotaViewSet)
+router.register(r'alertas', AlertaViewSet)
 
 original_index = admin.site.index
 
@@ -37,7 +48,10 @@ urlpatterns = [
     # Frontend Dashboard Web
     path('', dashboard_view, name='dashboard'),
 
-    # API REST AldaEdu
+    # Django REST Framework (Endpoints CRUD estándar)
+    path('api/', include(router.urls)),
+
+    # API REST AldaEdu (Endpoints específicos del Dashboard y Analítica)
     path('api/auth/login/', api_login, name='api_login'),
     path('api/students/', api_students, name='api_students'),
     path('api/students/<int:pk>/', api_student_detail, name='api_student_detail'),

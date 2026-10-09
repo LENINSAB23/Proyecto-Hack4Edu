@@ -1,6 +1,6 @@
-# 🎓 AldaEdu — Hack4Edu 2026
+# 🎓 AldaEdu / EduSync — Hack4Edu 2026
 
-> **Plataforma inteligente de seguimiento académico y detección temprana del riesgo de deserción escolar.** Desarrollada para empoderar a docentes y tutores mediante analítica predictiva de asistencia, calificaciones y alertas automatizadas multicanal (WhatsApp y Email).
+> **Plataforma inteligente de seguimiento académico y detección temprana del riesgo de deserción escolar.** Desarrollada para el concurso **Hack4Edu (Reto 05: "Detectar antes de que sea demasiado tarde")**, empoderando a docentes y tutores mediante analítica predictiva de asistencia, calificaciones y alertas automatizadas multicanal (WhatsApp y Email).
 
 ---
 
@@ -19,10 +19,21 @@
   - Conexión vía Transaction Pooler (PostgreSQL en puerto 6543).
   - Fallback automático a SQLite local si no se detectan credenciales de base de datos remota.
 - **Panel Administrativo Profesional**:
-  - Personalizado con **Django Jazzmin** con paleta corporativa AldaEdu.
+  - Personalizado con **Django Jazzmin** y paleta institucional.
   - Badges dinámicos de severidad de riesgo, filtros avanzados y acciones en lote.
 - **API REST Integrada**:
-  - Endpoints para gestión de alumnos, registro de notas, asistencia, materiales y evaluación masiva.
+  - Endpoints CRUD estándar con **Django REST Framework (DRF)**.
+  - Endpoints analíticos y reactivos para el Dashboard y envío de notificaciones.
+
+---
+
+## 🛠️ Stack Tecnológico
+
+- **Backend:** Python 3.12, Django 5.x / 6.x, Django REST Framework
+- **Base de Datos:** Supabase (PostgreSQL en Transaction Pooler, puerto 6543) / SQLite (desarrollo local)
+- **Motor Analítico:** Pandas, NumPy
+- **Mensajería:** Twilio (WhatsApp API), Python SMTP / Email
+- **Frontend / UI:** HTML5 semántico, CSS moderno, JavaScript modular, Django Jazzmin Admin
 
 ---
 
@@ -34,12 +45,12 @@
 git clone https://github.com/LENINSAB23/Proyecto-Hack4Edu.git
 cd Proyecto-Hack4edu
 
-# Crear y activar entorno virtual
+# Crear entorno virtual
 python -m venv venv
 
-# En Windows:
+# Activar en Windows:
 venv\Scripts\activate
-# En Linux / macOS:
+# Activar en Linux / macOS:
 source venv/bin/activate
 ```
 
@@ -59,6 +70,13 @@ cp .env.example .env
 
 Configura tus credenciales en `.env`:
 - Conexión Supabase PostgreSQL (o déjalo en blanco para usar SQLite local).
+```env
+DB_NAME=postgres
+DB_USER=<usuario-del-pooler>
+DB_PASSWORD=<tu-password>
+DB_HOST=aws-0-sa-east-1.pooler.supabase.com
+DB_PORT=6543
+```
 - Claves de Twilio y Gmail para notificaciones reales por WhatsApp y correo.
 
 ### 4. Aplicar migraciones
@@ -67,7 +85,13 @@ Configura tus credenciales en `.env`:
 python manage.py migrate
 ```
 
-### 5. (Opcional) Cargar datos de demostración
+### 5. Crear superusuario (para el panel admin)
+
+```bash
+python manage.py createsuperuser
+```
+
+### 6. (Opcional) Cargar datos de demostración
 
 Carga un aula completa con estudiantes, notas, asistencias, materiales y diagnósticos calculados:
 
@@ -75,15 +99,35 @@ Carga un aula completa con estudiantes, notas, asistencias, materiales y diagnó
 python manage.py seed_data
 ```
 
-### 6. Iniciar el servidor de desarrollo
+### 7. Iniciar el servidor de desarrollo
 
 ```bash
 python manage.py runserver
 ```
 
 - **Aula / Dashboard Docente**: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
-- **Panel Admin AldaEdu**: [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)
+- **Panel Admin**: [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)
+- **API REST (DRF)**: [http://127.0.0.1:8000/api/](http://127.0.0.1:8000/api/)
 - **Acceso Docente Demo**: `docente@aldaedu.pe` / `123456`
+
+---
+
+## 📡 Endpoints de la API REST
+
+### Endpoints DRF (CRUD estándar)
+- `GET / POST /api/estudiantes/` — Listar y registrar estudiantes
+- `GET / POST /api/asistencias/` — Listar y registrar asistencias
+- `GET / POST /api/notas/` — Listar y registrar notas
+- `GET / POST /api/alertas/` — Listar y gestionar alertas
+
+### Endpoints del Dashboard y Analítica
+- `POST /api/auth/login/` — Autenticación docente
+- `GET / POST /api/students/` — Gestión reactiva de estudiantes para el Dashboard
+- `POST /api/evaluar-todos/` — Ejecución masiva del detector predictivo
+- `POST /api/students/<id>/evaluar/` — Evaluación individual por estudiante
+- `POST /api/notificar-tutor/` — Envío de alerta por WhatsApp y Correo
+- `GET / POST /api/materials/` — Repositorio de materiales pedagógicos
+- `GET /api/stats/` — Estadísticas globales del aula
 
 ---
 
@@ -108,7 +152,8 @@ Proyecto-Hack4edu/
 │   ├── services/
 │   │   └── detector.py         # Motor analítico con Pandas (score y reglas de riesgo)
 │   ├── models.py               # Modelos: Estudiante, Asistencia, Nota, Alerta, Material
-│   ├── views.py                # Endpoints de API REST y vista del Dashboard
+│   ├── serializers.py          # Serializadores Django REST Framework
+│   ├── views.py                # Endpoints API REST, ViewSets DRF y vista Dashboard
 │   └── admin.py                # Configuración de Jazzmin Admin
 ├── src/                        # Microservicios de mensajería externa
 │   ├── config.py               # Cargador de entorno para notificaciones
@@ -116,7 +161,7 @@ Proyecto-Hack4edu/
 │   └── notifier.py             # Integración con Twilio (WhatsApp) y SMTP (Email)
 ├── templates/                  # Plantillas HTML (index.html, admin personalizado)
 ├── static/                     # Archivos estáticos (CSS, JS, iconos)
-│   ├── css/                    # Estilos modernos del dashboard
+│   ├── css/                    # Estilos modernos del dashboard y admin custom
 │   └── js/                     # Lógica frontend reactiva y cliente API REST
 ├── .env.example                # Variables de entorno documentadas
 ├── requirements.txt            # Dependencias del proyecto

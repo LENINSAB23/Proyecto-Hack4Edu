@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'estudiantes',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -99,13 +100,13 @@ JAZZMIN_SETTINGS = {
     "copyright": "AldaEdu - Hack4Edu 2026",
     "show_sidebar": True,
     "navigation_expanded": True,
+    "custom_css": "css/admin_custom.css",
 }
 
 JAZZMIN_UI_TWEAKS = {
     "navbar": "navbar-dark",
     "navbar_fixed": True,
     "theme": "flatly",
-    "dark_mode_theme": None,
     "button_classes": {
         "primary": "btn-success",
         "secondary": "btn-outline-secondary",

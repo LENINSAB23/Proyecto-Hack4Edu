@@ -1,4 +1,5 @@
-django>=5.0
+Django>=5.0
+djangorestframework>=3.14.0
 django-jazzmin>=3.0.0
 python-decouple>=3.8
 psycopg2-binary>=2.9.9
@@ -6,3 +7,5 @@ pandas>=2.2.0
 numpy>=1.26.0
 python-dotenv>=1.0.0
 twilio>=8.10.0
+asgiref>=3.8.0
+sqlparse>=0.5.0

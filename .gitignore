@@ -1,18 +1,21 @@
-__pycache__/
-*.pyc
 # Entornos virtuales
 venv/
 env/
 .env/
 
-# Variables de entorno (¡NUNCA SUBIR EL .env REAL!)
+# Variables de entorno
 .env
+.env.*
+!.env.example
+
+# Base de datos local
 db.sqlite3
 *.sqlite3
 
 # Archivos de caché de Python
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
 *.pyo
 *.pyd
 .Python
@@ -21,4 +24,4 @@ __pycache__/
 .vscode/
 .idea/
 *.swp
-
+*.swo
